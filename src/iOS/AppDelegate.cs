@@ -16,7 +16,7 @@ namespace Silkweb.Mobile.MountainForecast.iOS
 
             window = new UIWindow(UIScreen.MainScreen.Bounds);	
 
-            window.RootViewController = App.GetMainPage().CreateViewController();
+            window.RootViewController = MountainForecastApp.Current.MainPage.CreateViewController();
 
             window.MakeKeyAndVisible();
 			

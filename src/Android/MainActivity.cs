@@ -16,7 +16,7 @@ namespace Silkweb.Mobile.MountainForecast.Android
 
             Xamarin.Forms.Forms.Init(this, bundle);
 
-            SetPage(App.GetMainPage());
+            SetPage(MountainForecastApp.Current.MainPage);
         }
     }
 }
