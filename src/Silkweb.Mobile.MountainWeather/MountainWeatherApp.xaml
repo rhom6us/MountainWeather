@@ -1,12 +1,43 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<core:App 
+<Application 
 	xmlns="http://xamarin.com/schemas/2014/forms" 
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:core="clr-namespace:Silkweb.Mobile.Core;assembly=Silkweb.Mobile.Core" 
+  	xmlns:converters="clr-namespace:Silkweb.Mobile.MountainWeather.Converters;assembly=Silkweb.Mobile.MountainWeather"
 	x:Class="Silkweb.Mobile.MountainWeather.MountainWeatherApp">
-	<core:App.Resources>
+	<Application.Resources>
 		<ResourceDictionary>
-			<Color x:Key="textColor">Red</Color>
+      		<converters:ImageSourceConverter x:Key="imageSourceConverter" />
+      		<Color x:Key="backgroundColor">#3d78a2</Color>
+      		<Color x:Key="highlightColor">#1AFFFFFF</Color>
+      		<Color x:Key="textColor">White</Color>
+      		<Color x:Key="accentColor">White</Color>
+      					
+      		<Style x:Key="headerStyle" TargetType="Label">
+				<Setter Property="Font" Value="Bold, Medium" />
+				<Setter Property="TextColor" Value="{StaticResource accentColor}" />
+			</Style>
+
+			<Style x:Key="largeHeaderStyle" TargetType="Label" BasedOn="{StaticResource headerStyle}">
+				<Setter Property="Font" Value="Bold, Large" />
+			</Style>
+
+			<Style x:Key="mediumHeaderStyle" TargetType="Label" BasedOn="{StaticResource headerStyle}">
+				<Setter Property="Font" Value="Bold, Medium" />
+			</Style>
+
+			<Style x:Key="smallHeaderStyle" TargetType="Label" BasedOn="{StaticResource headerStyle}">
+				<Setter Property="Font" Value="Bold, Small" />
+			</Style>
+						
+			<Style x:Key="textStyle" TargetType="Label">
+				<Setter Property="Font" Value="Small" />
+				<Setter Property="TextColor" Value="{StaticResource textColor}" />
+			</Style>
+
+			<Style x:Key="microTextStyle" TargetType="Label" BasedOn="{StaticResource textStyle}">
+				<Setter Property="Font" Value="Micro" />
+			</Style>
+
 		</ResourceDictionary>
-	</core:App.Resources>
-</core:App>
+	</Application.Resources>
+</Application>

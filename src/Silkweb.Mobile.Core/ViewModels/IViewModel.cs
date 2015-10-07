@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.ViewModels
 {
-    public interface IViewModel : INotifyPropertyChanged
+    public interface IViewModel : INotifyPropertyChanged, INavigationAware
     {
         string Title { get; set; }
-
-        void SetState<T>(Action<T> action) where T : class, IViewModel;
     }
 }
 

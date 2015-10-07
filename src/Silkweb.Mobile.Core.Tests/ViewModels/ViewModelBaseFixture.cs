@@ -23,16 +23,6 @@ namespace Silkweb.Mobile.Core.Tests.ViewModels
 
             Assert.That(propertyChanged, Is.True);
         }
-
-        [Test]
-        public void SetsViewModelSet()
-        {
-            var viewModel = new MockViewModel();
-
-            viewModel.SetState<MockViewModel>(x => x.Title = "Test");
-
-            Assert.That(viewModel.Title, Is.EqualTo("Test"));
-        }
     }
 }
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Silkweb.Mobile.Core.Services;
-using Xamarin.Forms;
 using Moq;
-using System.Threading.Tasks;
 using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Tests.Services
@@ -15,10 +13,7 @@ namespace Silkweb.Mobile.Core.Tests.Services
         public void DisplaysAlert()
         {
             var page = new Mock<IPage>();
-
-            Func<IPage> pageResolver = () => page.Object;
-
-            var dialogService = new DialogService(pageResolver);
+            var dialogService = new DialogService(page.Object);
 
             dialogService.DisplayAlert ("Alert", "You have been alerted", "OK");
 
@@ -32,9 +27,7 @@ namespace Silkweb.Mobile.Core.Tests.Services
             page.Setup(x => x.DisplayAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
 
-            Func<IPage> pageResolver = () => page.Object;
-
-            var dialogService = new DialogService(pageResolver);
+            var dialogService = new DialogService(page.Object);
 
             var answer = await dialogService.DisplayAlert("Question?", "Would you like to play a game", "Yes", "No");
 
@@ -49,9 +42,7 @@ namespace Silkweb.Mobile.Core.Tests.Services
             page.Setup(x => x.DisplayActionSheet("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook"))
                 .ReturnsAsync("Yes");
 
-            Func<IPage> pageResolver = () => page.Object;
-
-            var dialogService = new DialogService(pageResolver);
+            var dialogService = new DialogService(page.Object);
 
             var answer = await dialogService.DisplayActionSheet("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook");
 

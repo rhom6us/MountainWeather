@@ -1,9 +1,6 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Silkweb.Mobile.MountainWeather.Services;
 using System.Linq;
-using Moq;
-using Silkweb.Mobile.Core.Services;
 
 namespace Silkweb.Mobile.MountainWeather.Tests.Services
 {
@@ -13,8 +10,7 @@ namespace Silkweb.Mobile.MountainWeather.Tests.Services
         [Test, Ignore] // Current issue with 'Type Load Exception'
         public async void ReturnsMountainAreas()
         {
-            var dialogSerivce = new Mock<IDialogService>();
-            var service = new MountainWeatherService(dialogSerivce.Object);
+            var service = new MountainWeatherService();
 
             var areas = await service.GetAreas();
 
@@ -25,8 +21,7 @@ namespace Silkweb.Mobile.MountainWeather.Tests.Services
         [Test, Ignore] // Current issue with 'Type Load Exception'
         public async void ReturnAreaForecastReport()
         {
-            var dialogSerivce = new Mock<IDialogService>();
-            var service = new MountainWeatherService(dialogSerivce.Object);
+            var service = new MountainWeatherService();
 
             var forecastReport = await service.GetAreaForecast(101);
 

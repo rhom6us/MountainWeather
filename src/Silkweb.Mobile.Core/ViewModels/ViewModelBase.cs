@@ -5,9 +5,10 @@ using System.Runtime.CompilerServices;
 
 namespace Silkweb.Mobile.Core.ViewModels
 {
-    public abstract class ViewModelBase : IViewModel
+    public abstract class ViewModelBase : IViewModel, IDisposable
     {
         private string _title;
+        private bool _isBusy;
 
         public string Title
         {
@@ -15,12 +16,13 @@ namespace Silkweb.Mobile.Core.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void SetState<T>(Action<T> action) where T : class, IViewModel
+        public bool IsBusy
         {
-            action(this as T);
+            get { return _isBusy; }
+            set { SetProperty(ref _isBusy, value); }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
@@ -45,6 +47,18 @@ namespace Silkweb.Mobile.Core.ViewModels
         {
             var propertyName = PropertySupport.ExtractPropertyName(propertyExpression);
             OnPropertyChanged(propertyName);
+        }
+
+        public virtual void NavigatedTo()
+        {
+        }
+
+        public virtual void NavigatedFrom()
+        {
+        }
+
+        public virtual void Dispose()
+        {
         }
     }
 }

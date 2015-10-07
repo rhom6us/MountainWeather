@@ -3,7 +3,7 @@ using Silkweb.Mobile.Core.Views;
 
 namespace Silkweb.Mobile.Core.Tests.Views
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture]
     public class TextCellExtendedFixture
     {
         [Test]

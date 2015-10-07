@@ -3,37 +3,40 @@ using Xamarin.Forms;
 using System.Threading.Tasks;
 using Silkweb.Mobile.Core.Factories;
 using Silkweb.Mobile.Core.ViewModels;
-using Autofac;
 using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Services
 {
     public class Navigator : INavigator
     {
-        private readonly Func<IPage> _pageResolver;
+        private readonly IPage _page;
         private readonly IViewFactory _viewFactory;
 
-        public Navigator(Func<IPage> pageResolver, IViewFactory viewFactory)
+        public Navigator(IPage page, IViewFactory viewFactory)
         {
-            _pageResolver = pageResolver;
+            _page = page;
             _viewFactory = viewFactory;
         }
 
         private INavigation Navigation
         {
-            get { return _pageResolver().Navigation; }
+            get { return _page.Navigation; }
         }
 
         public async Task<IViewModel> PopAsync()
         {
             Page view = await Navigation.PopAsync();
-            return view.BindingContext as IViewModel;
+            var viewModel = view.BindingContext as IViewModel;
+            viewModel.NavigatedFrom();
+            return viewModel;
         }
 
         public async Task<IViewModel> PopModalAsync()
         {
-            Page view = await Navigation.PopAsync();
-            return view.BindingContext as IViewModel;
+            Page view = await Navigation.PopModalAsync();
+            var viewModel = view.BindingContext as IViewModel;
+            viewModel.NavigatedFrom();
+            return viewModel;
         }
 
         public async Task PopToRootAsync()
@@ -47,6 +50,7 @@ namespace Silkweb.Mobile.Core.Services
             TViewModel viewModel;
             var view = _viewFactory.Resolve<TViewModel>(out viewModel, setStateAction);
             await Navigation.PushAsync(view);
+            viewModel.NavigatedTo();
             return viewModel;
         }
 
@@ -55,6 +59,7 @@ namespace Silkweb.Mobile.Core.Services
         {
             var view = _viewFactory.Resolve(viewModel);
             await Navigation.PushAsync(view);
+            viewModel.NavigatedTo();
             return viewModel;
         }
 

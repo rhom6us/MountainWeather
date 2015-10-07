@@ -4,7 +4,7 @@ using Silkweb.Mobile.MountainWeather.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Silkweb.Mobile.Core.ViewModels;
-using System.Threading.Tasks;
+using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.MountainWeather.ViewModels
 {
@@ -13,10 +13,14 @@ namespace Silkweb.Mobile.MountainWeather.ViewModels
         private IEnumerable<MountainAreaViewModel> _areas;
         private readonly IMountainWeatherService _mountainWeatherService;
         private readonly Func<Location, MountainAreaViewModel> _areaViewModelFactory;
+        private readonly IDialogProvider _dialogProvider;
 
-        public MountainAreasViewModel(IMountainWeatherService mountainWeatherService, 
-            Func<Location, MountainAreaViewModel> areaViewModelFactory)
+        public MountainAreasViewModel(
+            IMountainWeatherService mountainWeatherService, 
+            Func<Location, MountainAreaViewModel> areaViewModelFactory,
+            IDialogProvider dialogProvider)
         {
+            this._dialogProvider = dialogProvider;
             _areaViewModelFactory = areaViewModelFactory;
             _mountainWeatherService = mountainWeatherService;
             Title = "Mountain Areas";
@@ -31,29 +35,35 @@ namespace Silkweb.Mobile.MountainWeather.ViewModels
 
         private async void SetAreas()
         {
-            var locations = await _mountainWeatherService.GetAreas();
+            try
+            {
+                IsBusy = true;
+                var locations = await _mountainWeatherService.GetAreas();
 
-            Areas = locations
-                .Select(location =>  _areaViewModelFactory(location))
-                .ToList();
+                if (locations == null)
+                    return;
+
+                Areas = locations
+                    .Select(location =>  _areaViewModelFactory(location))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Action action = async () =>
+                {
+                    var result = await _dialogProvider.DisplayActionSheet(ex.Message, "Cancel", null, "Retry");
+
+                    if (result == "Retry")
+                        SetAreas();
+                };
+
+                action();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
-
-//        private async void SetAreas()
-//        {
-//            var locations = await _mountainWeatherService.GetAreas();
-//            var capabilities = await _mountainWeatherService.GetCapabilities();
-//
-//            Areas = locations.Join(capabilities, x => x.Name, x => x.Area, (x, y) => 
-//                {
-//                    var vm = _areaViewModelFactory(x);
-//
-//                    vm.IssuedDate = y.IssuedDate;
-//                    vm.ValidFrom = y.ValidFrom;
-//                    vm.ValidTo = y.ValidTo;
-//
-//                    return vm;
-//                }).ToList();
-//        }
     }
 }
 

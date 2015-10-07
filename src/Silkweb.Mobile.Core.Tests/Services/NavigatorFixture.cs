@@ -6,12 +6,11 @@ using Xamarin.Forms;
 using Silkweb.Mobile.Core.Factories;
 using Silkweb.Mobile.Core.Tests.Mocks;
 using Silkweb.Mobile.Core.ViewModels;
-using System.Threading.Tasks;
 using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Tests.Services
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture]
     public class NavigatorFixture
     {
         private MockViewModel _viewModel;
@@ -35,7 +34,7 @@ namespace Silkweb.Mobile.Core.Tests.Services
             var viewFactory = new Mock<IViewFactory>();
             viewFactory.Setup(x => x.Resolve<MockViewModel>(out _viewModel, _action)).Returns(new MockView());
 
-            _navigator = new Navigator(new Func<IPage>(() => page.Object), viewFactory.Object);
+            _navigator = new Navigator(page.Object, viewFactory.Object);
         }
 
         [Test]

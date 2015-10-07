@@ -14,7 +14,7 @@ namespace Silkweb.Mobile.Core.Bootstrapping
         {
             // service registration
             builder.RegisterType<DialogService>()
-                .As<IDialogService>()
+                .As<IDialogProvider>()
                 .SingleInstance();
 
             builder.RegisterType<ViewFactory>()
@@ -25,30 +25,29 @@ namespace Silkweb.Mobile.Core.Bootstrapping
                 .As<INavigator>()
                 .SingleInstance();
 
-            builder.RegisterType<DialogService>()
-                .As<IDialogService>()
-                .SingleInstance();
-
-            // current page resolver
-            builder.RegisterInstance<Func<IPage>>(() =>
+            // default page resolver
+            builder.RegisterInstance<Func<Page>>(() =>
                 {
-                    if (App.Current == null || App.Current.MainPage == null)
-                        return null;
-
                     // Check if we are using MasterDetailPage
-                    var masterDetailPage = App.Current.MainPage as MasterDetailPage;
+                    var masterDetailPage = Application.Current.MainPage as MasterDetailPage;
 
                     var page = masterDetailPage != null 
                         ? masterDetailPage.Detail 
-                        : App.Current.MainPage;
+                        : Application.Current.MainPage;
 
                     // Check if page is a NavigationPage
                     var navigationPage = page as IPageContainer<Page>;
 
                     return navigationPage != null 
-                        ? new PageProxy(navigationPage.CurrentPage)
-                            : new PageProxy(page);
-                });
+                        ? navigationPage.CurrentPage
+                            : page;
+                }
+            );
+
+            // current PageProxy
+            builder.RegisterType<PageProxy>()
+                .As<IPage>()
+                .SingleInstance();
         }
     }
 }

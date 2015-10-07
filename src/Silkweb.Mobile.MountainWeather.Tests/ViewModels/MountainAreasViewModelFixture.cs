@@ -5,8 +5,8 @@ using Moq;
 using Silkweb.Mobile.MountainWeather.Services;
 using Silkweb.Mobile.MountainWeather.ViewModels;
 using Silkweb.Mobile.Core.Services;
-using System.Collections.Generic;
 using System.Linq;
+using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.MountainWeather.Tests.ViewModels
 {
@@ -18,9 +18,11 @@ namespace Silkweb.Mobile.MountainWeather.Tests.ViewModels
         {
             var service = new Mock<IMountainWeatherService>();
             var navigator = new Mock<INavigator>();
+            var dialogProvder = new Mock<IDialogProvider>();
+            var forecastReportViewModel = new Mock<ForecastReportViewModel>();
 
             Func<Location, MountainAreaViewModel> locationFactory = location => 
-                new MountainAreaViewModel(location, service.Object, navigator.Object);
+                new MountainAreaViewModel(location, navigator.Object, x => forecastReportViewModel.Object);
 
             var areas = new Location[]
                 {
@@ -31,7 +33,7 @@ namespace Silkweb.Mobile.MountainWeather.Tests.ViewModels
 
             service.Setup(x => x.GetAreas()).ReturnsAsync(areas);
 
-            var viewModel = new MountainAreasViewModel(service.Object, locationFactory);
+            var viewModel = new MountainAreasViewModel(service.Object, locationFactory, dialogProvder.Object);
 
             service.Verify(x => x.GetAreas());
 

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage 
+	xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	x:Class="Silkweb.Mobile.MountainWeather.Views.HazardsView"
+	xmlns:ex="clr-namespace:Silkweb.Mobile.Core.Extensions;assembly=Silkweb.Mobile.Core" 
+	xmlns:cv="clr-namespace:Silkweb.Mobile.Core.Views;assembly=Silkweb.Mobile.Core"
+	xmlns:converters="clr-namespace:Silkweb.Mobile.MountainWeather.Converters;assembly=Silkweb.Mobile.MountainWeather"
+	xmlns:model="clr-namespace:Silkweb.Mobile.MountainWeather.Models;assembly=Silkweb.Mobile.MountainWeather"
+	xmlns:behaviors="clr-namespace:Silkweb.Mobile.Core.Behaviors;assembly=Silkweb.Mobile.Core"
+	Title="{Binding Title}" BackgroundColor="{ex:ApplicationResource backgroundColor}" Padding="5">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+
+			<converters:RiskToColorConverter x:Key="riskToBackgroundColorConverter" HighColor="Red" MediumColor="#FF6600" LowColor="Yellow" />
+			<converters:RiskToColorConverter x:Key="riskToTextColorConverter" HighColor="White" MediumColor="White" LowColor="Black" />
+
+			<DataTemplate x:Key="hazardTemplate">
+				<StackLayout Spacing="0" Padding="0,0,0,10">
+					<ContentView BackgroundColor="{Binding Risk, Converter={StaticResource riskToBackgroundColorConverter}}">
+						<ContentView Padding="5">
+							<Label Text="{Binding Element}" Style="{StaticResource mediumHeaderStyle}"
+								   TextColor="{Binding Risk, Converter={StaticResource riskToTextColorConverter}}" />
+						</ContentView>
+					</ContentView>
+
+					<ContentView BackgroundColor="White">
+						<ContentView Padding="5">
+							<Label Text="{Binding Comments}" Font="Small" />
+						</ContentView>
+					</ContentView>
+
+				</StackLayout>
+			</DataTemplate>
+
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+	<StackLayout>
+		<StackLayout Spacing="0">
+			<Label Text="{Binding Date}" Style="{StaticResource largeHeaderStyle}" />
+			<Label Text="{Binding IssuedBy}" Style="{StaticResource microTextStyle}"  />
+		</StackLayout>
+
+		<ScrollView Orientation="Vertical">
+			<StackLayout Orientation="Vertical">
+				<StackLayout.Behaviors>
+					<behaviors:ItemsSourceBehavior ItemsSource="{Binding Hazards}" ItemTemplate="{StaticResource hazardTemplate}" />
+				</StackLayout.Behaviors>
+			</StackLayout>
+		</ScrollView>
+												
+	</StackLayout>
+
+</ContentPage>

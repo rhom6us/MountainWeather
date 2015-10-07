@@ -7,31 +7,36 @@ namespace Silkweb.Mobile.Core.Views
 {
     public class PageProxy : IPage
     {
-        private readonly Page _page;
+        private readonly Func<Page> _pageResolver;
 
-        public PageProxy(Page page)
+        public PageProxy(Func<Page> pageResolver)
         {
-            _page = page;
+            _pageResolver = pageResolver;
         }
 
         public async Task DisplayAlert(string title, string message, string cancel)
         {
-            await _page.DisplayAlert(title, message, cancel);
+            await _pageResolver().DisplayAlert(title, message, cancel);
         }
 
         public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
         {
-            return await _page.DisplayAlert(title, message, accept, cancel);
+            return await _pageResolver().DisplayAlert(title, message, accept, cancel);
         }
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)
         {
-            return await _page.DisplayActionSheet(title, cancel, destruction, buttons);
+            return await _pageResolver().DisplayActionSheet(title, cancel, destruction, buttons);
         }
 
         public INavigation Navigation
         {
-            get { return _page.Navigation; }
+            get 
+            { 
+                var page = _pageResolver();
+                var navigatioon  = page.Navigation; 
+                return navigatioon;
+            }
         }
     }
 }

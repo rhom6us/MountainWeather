@@ -6,43 +6,28 @@ using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Services
 {
-    public class DialogService : IDialogService
+    public class DialogService : IDialogProvider
     {
-        private readonly Func<IPage> _pageResolver;
+        private readonly IPage _page;
 
-        public DialogService(Func<IPage> pageResolver)
+        public DialogService(IPage page)
         {
-            _pageResolver = pageResolver;            
+            _page = page;            
         }
 
-        public void DisplayAlert( string title, string message, string cancel)
+        public Task DisplayAlert( string title, string message, string cancel)
         {
-            var page = _pageResolver();
-
-            if (page == null)
-                return;
-
-            page.DisplayAlert(title, message, cancel);
+            return _page.DisplayAlert(title, message, cancel);
         }
 
         public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
         {
-            var page = _pageResolver();
-
-            if (page == null)
-                return false;
-
-            return await page.DisplayAlert(title, message, accept, cancel);
+            return await _page.DisplayAlert(title, message, accept, cancel);
         }
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)
         {
-            var page = _pageResolver();
-
-            if (page == null)
-                return null;
-
-            return await page.DisplayActionSheet(title, cancel, destruction, buttons);
+            return await _page.DisplayActionSheet(title, cancel, destruction, buttons);
         }
     }
 }

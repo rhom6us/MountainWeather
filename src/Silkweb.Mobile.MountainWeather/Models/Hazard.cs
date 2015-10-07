@@ -9,7 +9,7 @@ namespace Silkweb.Mobile.MountainWeather.Models
 
         public string Element { get; set; }
 
-        public string Risk { get; set; }
+        public Risk Risk { get; set; }
 
         public string Comments { get; set; }
 	}
