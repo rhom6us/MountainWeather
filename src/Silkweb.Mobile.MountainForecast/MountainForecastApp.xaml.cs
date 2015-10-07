@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using Silkweb.Mobile.MountainForecast.Views;
 using Silkweb.Mobile.MountainForecast.ViewModels;
 using Silkweb.Mobile.Core;
+using Autofac;
 
 namespace Silkweb.Mobile.MountainForecast
 {	
@@ -12,12 +13,8 @@ namespace Silkweb.Mobile.MountainForecast
 		public MountainForecastApp()
 		{
 			InitializeComponent();
-
-            MainPage = new NavigationPage(new MainPage
-                {
-                    BindingContext = new MainViewModel()
-                });
-		} 
+            Bootstrapper.Run();
+		}
 
         public new static App Current
         {

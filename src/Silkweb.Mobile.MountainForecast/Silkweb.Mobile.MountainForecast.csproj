@@ -38,6 +38,16 @@
     <Compile Include="MountainForecastApp.xaml.cs">
       <DependentUpon>MountainForecastApp.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MountainForecastModule.cs" />
+    <Compile Include="Services\IMountainWeatherService.cs" />
+    <Compile Include="Services\MountainWeatherService.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="ViewModels\MountainAreasViewModel.cs" />
+    <Compile Include="ViewModels\MountainAreaViewModel.cs" />
+    <Compile Include="Views\MountainAreasView.xaml.cs">
+      <DependentUpon>MountainAreasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Bootstrapper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.1.2.3.6257\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.2.3.6257\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets')" />
@@ -48,18 +58,25 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\packages\Xamarin.Forms.1.2.3.6257\lib\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac">
+      <HintPath>..\packages\Autofac.3.5.2\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Autofac.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="MountainForecastApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MountainAreasView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
