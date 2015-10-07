@@ -5,7 +5,7 @@ using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 
-namespace Silkweb.Mobile.MountainForecast.iOS
+namespace Silkweb.Mobile.MountainWeather.iOS
 {
     public class Application
     {

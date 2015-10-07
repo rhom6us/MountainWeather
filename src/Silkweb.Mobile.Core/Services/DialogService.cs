@@ -7,9 +7,9 @@ namespace Silkweb.Mobile.Core.Services
 {
     public class DialogService : IDialogService
     {
-        private readonly NavigationPage _navigationPage;
+        private readonly IPageContainer<Page> _navigationPage;
 
-        public DialogService(NavigationPage navigationPage)
+        public DialogService(IPageContainer<Page> navigationPage)
         {
             _navigationPage = navigationPage;
         }
@@ -18,7 +18,8 @@ namespace Silkweb.Mobile.Core.Services
 
         public async Task DisplayAlert( string title, string message)
         {
-            await _navigationPage.CurrentPage.DisplayAlert(title, message, null);
+            var page = _navigationPage.CurrentPage;
+            await page.DisplayAlert(title, message, "Cancel");
         }
 
         #endregion

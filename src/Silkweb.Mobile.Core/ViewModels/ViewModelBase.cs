@@ -7,7 +7,13 @@ namespace Silkweb.Mobile.Core.ViewModels
 {
     public abstract class ViewModelBase : IViewModel
     {
-        public string Title { get; set; }
+        private string _title;
+
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -21,14 +27,14 @@ namespace Silkweb.Mobile.Core.ViewModels
             if (object.Equals(storage, value)) return false;
 
             storage = value;
-            this.OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName);
 
             return true;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var eventHandler = this.PropertyChanged;
+            var eventHandler = PropertyChanged;
             if (eventHandler != null)
             {
                 eventHandler(this, new PropertyChangedEventArgs(propertyName));
@@ -38,7 +44,7 @@ namespace Silkweb.Mobile.Core.ViewModels
         protected void OnPropertyChanged<T>(Expression<Func<T>> propertyExpression)
         {
             var propertyName = PropertySupport.ExtractPropertyName(propertyExpression);
-            this.OnPropertyChanged(propertyName);
+            OnPropertyChanged(propertyName);
         }
     }
 }

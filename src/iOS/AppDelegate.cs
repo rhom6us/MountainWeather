@@ -3,7 +3,7 @@ using MonoTouch.UIKit;
 
 using Xamarin.Forms;
 
-namespace Silkweb.Mobile.MountainForecast.iOS
+namespace Silkweb.Mobile.MountainWeather.iOS
 {
     [Register("AppDelegate")]
     public partial class AppDelegate : UIApplicationDelegate
@@ -16,7 +16,7 @@ namespace Silkweb.Mobile.MountainForecast.iOS
 
             window = new UIWindow(UIScreen.MainScreen.Bounds);	
 
-            window.RootViewController = MountainForecastApp.Current.MainPage.CreateViewController();
+            window.RootViewController = MountainWeatherApp.Current.MainPage.CreateViewController();
 
             window.MakeKeyAndVisible();
 			

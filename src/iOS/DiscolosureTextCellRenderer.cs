@@ -1,10 +1,10 @@
 ﻿using Xamarin.Forms;
-using Silkweb.Mobile.MountainForecast.iOS;
+using Silkweb.Mobile.MountainWeather.iOS;
 using Silkweb.Mobile.Core.Views;
 
 [assembly: ExportRenderer (typeof (TextCellExtended), typeof (DiscolosureTextCellRenderer))]
 
-namespace Silkweb.Mobile.MountainForecast.iOS
+namespace Silkweb.Mobile.MountainWeather.iOS
 {
     public class DiscolosureTextCellRenderer : Xamarin.Forms.Platform.iOS.TextCellRenderer
     {      

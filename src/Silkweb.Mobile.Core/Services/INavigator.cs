@@ -4,10 +4,6 @@ using Silkweb.Mobile.Core.ViewModels;
 
 namespace Silkweb.Mobile.Core.Services
 {
-    /// <summary>
-    /// This is an MVVM friendly version of INavigation that navigates with IViewModel rather than Page.
-    ///  
-    /// </summary>
     public interface INavigator
     {
         Task<IViewModel> PopAsync();
@@ -28,18 +24,5 @@ namespace Silkweb.Mobile.Core.Services
         Task<TViewModel> PushModalAsync<TViewModel>(TViewModel viewModel) 
             where TViewModel : class, IViewModel;
     }
-
-//    public interface INavigation
-//    {
-//        Task<Page> PopAsync();
-//
-//        Task<Page> PopModalAsync();
-//
-//        Task PopToRootAsync();
-//
-//        Task PushAsync(Page page);
-//
-//        Task PushModalAsync(Page page);
-//    }
 }
 
