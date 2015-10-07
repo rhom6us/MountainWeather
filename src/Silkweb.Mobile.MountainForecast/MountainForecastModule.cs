@@ -1,8 +1,10 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Silkweb.Mobile.MountainForecast.Services;
 using Silkweb.Mobile.MountainForecast.ViewModels;
 using Silkweb.Mobile.MountainForecast.Views;
+using Xamarin.Forms;
+using Silkweb.Mobile.Core.Factories;
+using Silkweb.Mobile.Core;
 
 namespace Silkweb.Mobile.MountainForecast
 {
@@ -10,20 +12,26 @@ namespace Silkweb.Mobile.MountainForecast
     {
         protected override void Load(ContainerBuilder builder)
         {
+            // service registration
             builder.RegisterType<MountainWeatherService>()
                 .As<IMountainWeatherService>()
                 .SingleInstance();
 
-            builder.RegisterType<MountainAreaViewModel>()
-                .AsSelf();
+            // view model registration
+            builder.RegisterType<MountainAreaViewModel>();
 
             builder.RegisterType<MountainAreasViewModel>()
-                .AsSelf()
                 .SingleInstance();
 
-            builder.RegisterType<MountainAreasView>()
-                .AsSelf()
+            builder.RegisterType<ForecastReportViewModel>()
                 .SingleInstance();
+
+            // view registration
+            builder.RegisterType<MountainAreasView>()
+                .SingleInstance();
+
+            builder.RegisterType<ForecastReportView>()
+                .SingleInstance();           
         }
     }
 }

@@ -3,10 +3,11 @@ using Silkweb.Mobile.MountainForecast.Services;
 using Silkweb.Mobile.MountainForecast.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Silkweb.Mobile.Core.ViewModels;
 
 namespace Silkweb.Mobile.MountainForecast.ViewModels
 {
-    public class MountainAreasViewModel
+    public class MountainAreasViewModel : ViewModelBase
     {
         private readonly IMountainWeatherService _mountainWeatherService;
         private readonly Func<Location, MountainAreaViewModel> _areaViewModelFactory;
@@ -17,18 +18,15 @@ namespace Silkweb.Mobile.MountainForecast.ViewModels
             _areaViewModelFactory = areaViewModelFactory;
             _mountainWeatherService = mountainWeatherService;
             Title = "Mountain Areas";
-            GetAreas();
+            Areas = GetAreas();
         }
 
-        public string Title { get; set; }
+        public IEnumerable<MountainAreaViewModel> Areas { get; private set;}
 
-        public IEnumerable<MountainAreaViewModel> Areas { get; set; }
-
-        private void GetAreas()
+        private IEnumerable<MountainAreaViewModel> GetAreas()
         {
             var areas = _mountainWeatherService.GetAreas();
-            Areas = areas.Select(location => _areaViewModelFactory(location))
-                .ToList();
+            return areas.Select(location => _areaViewModelFactory(location)).ToList();
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
-using Silkweb.Mobile.Core;
 
 namespace Silkweb.Mobile.MountainForecast.Views
 {	
-	public partial class MainPage : ContentPage
+	public partial class ForecastReportView : ContentPage
 	{	
-		public MainPage ()
+		public ForecastReportView ()
 		{
 			InitializeComponent ();
 		}

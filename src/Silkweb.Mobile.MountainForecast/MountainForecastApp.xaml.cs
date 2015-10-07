@@ -13,7 +13,9 @@ namespace Silkweb.Mobile.MountainForecast
 		public MountainForecastApp()
 		{
 			InitializeComponent();
-            Bootstrapper.Run();
+
+            var bootstrapper = new Bootstrapper(this);
+            bootstrapper.Run();
 		}
 
         public new static App Current
