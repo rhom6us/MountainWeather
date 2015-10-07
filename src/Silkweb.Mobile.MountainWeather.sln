@@ -23,6 +23,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silkweb.Mobile.MountainWeat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silkweb.Mobile.MountainWeather.Tests", "Silkweb.Mobile.MountainWeather.Tests\Silkweb.Mobile.MountainWeather.Tests.csproj", "{F47D2D21-C606-4E80-BAD8-78166841FF41}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{4FC3BA8F-DEF7-403B-9F97-6F9060CD060D}"
+	ProjectSection(SolutionItems) = preProject
+		DataPoint_API_reference.pdf = DataPoint_API_reference.pdf
+		DataPointKey.txt = DataPointKey.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU

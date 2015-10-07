@@ -6,7 +6,7 @@ namespace Silkweb.Mobile.MountainWeather.Views
 	{	
         public MountainAreasView ()
 		{
-			InitializeComponent ();
+            InitializeComponent ();
 		}
 	}
 }

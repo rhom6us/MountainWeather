@@ -3,8 +3,65 @@
 	xmlns="http://xamarin.com/schemas/2014/forms" 
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
 	x:Class="Silkweb.Mobile.MountainWeather.Views.ForecastReportView"
+	xmlns:cv="clr-namespace:Silkweb.Mobile.Core.Views;assembly=Silkweb.Mobile.Core"
 	Title="{Binding Title}">
 
-	<Label Text="{Binding Forecast}" />
+	<StackLayout BindingContext="{Binding ForecastReport}" Padding="5">
+
+		<Label Text="{Binding IssueDateTime, StringFormat='Issued at {0:ddd dd MMM yyyy} at {0:H:mm}'}" 
+			   Font="Bold, Micro" />
+		<Label Text="{Binding Overview}" Font="Micro" />
+
+
+
+<!--	<TableView BindingContext="{Binding ForecastReport}">
+		<TableView.Root>
+			<TableRoot>
+							
+				<TableSection Title="Forecast">
+					<TextCell Text="{Binding IssueDateTime, StringFormat='Issued at {0:ddd dd MMM yyyy} at {0:H:mm}'}" />
+					<TextCell Text="{Binding ValidFrom, StringFormat='Valid from {0:ddd dd MMM yyyy 0:H:mm}'}" />
+					<TextCell Text="{Binding ValidTo, StringFormat='Valid to {0:ddd dd MMM yyyy 0:H:mm}'}" />
+				</TableSection>
+
+				<TableSection Title="Overview">
+					<ViewCell>
+						<ViewCell.View>
+							<Label Text="{Binding Overview}" Font="Mirco" /> 
+						</ViewCell.View>
+					</ViewCell>
+				</TableSection>
+
+				<TableSection Title="{Binding IssueDateTime, StringFormat='{0:ddd}'}">
+					<ViewCell>
+						<ViewCell.View>
+							<Label BindingContext="{Binding ForecastDay0}" Text="{Binding Weather}" Font="Mirco" /> 
+						</ViewCell.View>
+					</ViewCell>
+				</TableSection>
+
+			</TableRoot>
+		</TableView.Root>
+	</TableView>-->
+
+<!--	<StackLayout BindingContext="{Binding ForecastReport}">
+		<Label Text="Overview" Font="Bold, Micro" />
+		<Label Text="{Binding Overview}" Font="Micro" TextColor="Accent" />
+	</StackLayout>
+
+	<StackLayout>
+		<Label Text="Forecast" Font="Bold, Micro" />
+		<ListView ItemsSource="{Binding ForecastDays}">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<cv:TextCellExtended
+						Text="{Binding}"
+						ShowDisclosure="True" />
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</StackLayout>-->
+
+	</StackLayout>
 
 </ContentPage>

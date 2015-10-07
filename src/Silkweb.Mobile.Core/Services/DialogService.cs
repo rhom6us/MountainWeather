@@ -2,27 +2,48 @@
 using Silkweb.Mobile.Core.Services;
 using Xamarin.Forms;
 using System.Threading.Tasks;
+using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Services
 {
     public class DialogService : IDialogService
     {
-        private readonly IPageContainer<Page> _navigationPage;
+        private readonly Func<IPage> _pageResolver;
 
-        public DialogService(IPageContainer<Page> navigationPage)
+        public DialogService(Func<IPage> pageResolver)
         {
-            _navigationPage = navigationPage;
+            _pageResolver = pageResolver;            
         }
 
-        #region IDialogService implementation
-
-        public async Task DisplayAlert( string title, string message)
+        public void DisplayAlert( string title, string message, string cancel)
         {
-            var page = _navigationPage.CurrentPage;
-            await page.DisplayAlert(title, message, "Cancel");
+            var page = _pageResolver();
+
+            if (page == null)
+                return;
+
+            page.DisplayAlert(title, message, cancel);
         }
 
-        #endregion
+        public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
+        {
+            var page = _pageResolver();
+
+            if (page == null)
+                return false;
+
+            return await page.DisplayAlert(title, message, accept, cancel);
+        }
+
+        public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)
+        {
+            var page = _pageResolver();
+
+            if (page == null)
+                return null;
+
+            return await page.DisplayActionSheet(title, cancel, destruction, buttons);
+        }
     }
 }
 

@@ -24,19 +24,27 @@ namespace Silkweb.Mobile.MountainWeather.ViewModels
             ShowForecastCommand = new Command(ShowForecast);
         }
 
+
         public string Name { get { return _location.Name; } }
+
+        public DateTime IssuedDate { get; set; }
+
+        public DateTime ValidFrom { get; set; }
+
+        public DateTime ValidTo { get; set; }
 
         public ICommand ShowForecastCommand { get; set; }
 
         private async void ShowForecast()
         {
-            ForecastReport forecastReport = _mountainWeatherService.GetAreaForecast(_location.Id);
+            ForecastReport forecast = await _mountainWeatherService.GetAreaForecast(_location.Id);
 
-            await _navigator.PushAsync<ForecastReportViewModel>(viewModel =>
+            await _navigator.PushAsync<ForecastReportViewModel>(vm => 
                 {
-                    viewModel.Title = _location.Name;
-                    viewModel.Forecast = forecastReport.Forecast;
-                });
+                    vm.Title = _location.Name;
+                    vm.ForecastReport = forecast;
+                }
+            );
         }
     }
 }

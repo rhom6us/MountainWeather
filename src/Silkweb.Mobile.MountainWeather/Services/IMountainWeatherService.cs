@@ -1,13 +1,17 @@
-﻿using Silkweb.Mobile.MountainWeather.Models;
+﻿using System;
 using System.Collections.Generic;
+using Silkweb.Mobile.MountainWeather.Models;
+using System.Threading.Tasks;
 
 namespace Silkweb.Mobile.MountainWeather.Services
 {
     public interface IMountainWeatherService
     {
-        IEnumerable<Location> GetAreas();
+        Task<ForecastCapability[]> GetCapabilities();
 
-        ForecastReport GetAreaForecast(int id);
+        Task<IEnumerable<Location>> GetAreas();
+
+        Task<ForecastReport> GetAreaForecast(int id);
     }
 }
 

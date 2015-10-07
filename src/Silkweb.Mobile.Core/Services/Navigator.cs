@@ -4,23 +4,24 @@ using System.Threading.Tasks;
 using Silkweb.Mobile.Core.Factories;
 using Silkweb.Mobile.Core.ViewModels;
 using Autofac;
+using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Services
 {
     public class Navigator : INavigator
     {
-        private readonly Lazy<INavigation> _navigation;
+        private readonly Func<IPage> _pageResolver;
         private readonly IViewFactory _viewFactory;
 
-        public Navigator(Lazy<INavigation> navigation, IViewFactory viewFactory)
+        public Navigator(Func<IPage> pageResolver, IViewFactory viewFactory)
         {
-            _navigation = navigation;
+            _pageResolver = pageResolver;
             _viewFactory = viewFactory;
         }
 
         private INavigation Navigation
         {
-            get { return _navigation.Value; }
+            get { return _pageResolver().Navigation; }
         }
 
         public async Task<IViewModel> PopAsync()

@@ -1,17 +1,18 @@
 ﻿using System;
 using Silkweb.Mobile.MountainWeather.Models;
 using Silkweb.Mobile.Core.ViewModels;
+using System.Collections.Generic;
 
 namespace Silkweb.Mobile.MountainWeather.ViewModels
 {
     public class ForecastReportViewModel : ViewModelBase
     {
-        private string _forecast;
+        private ForecastReport _forecastReport;
 
-        public string Forecast
+        public ForecastReport ForecastReport
         {
-            get { return _forecast; }
-            set { SetProperty(ref _forecast, value); }
+            get { return _forecastReport; }
+            set { SetProperty(ref _forecastReport, value); }
         }
     }
 }

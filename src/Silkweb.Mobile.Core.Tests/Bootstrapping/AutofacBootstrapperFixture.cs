@@ -26,7 +26,6 @@ namespace Silkweb.Mobile.Core.Tests.Bootstrapping
             Assert.That(view, Is.Not.Null);
 
             Assert.That(bootstrapper.Container, Is.Not.Null);
-            Assert.That(bootstrapper.Container.ComponentRegistry.Registrations.Count(), Is.EqualTo(7));
 
         }
     }

@@ -1,35 +1,215 @@
-﻿using Silkweb.Mobile.MountainWeather.Models;
+﻿using System;
 using System.Collections.Generic;
+using Silkweb.Mobile.MountainWeather.Models;
+using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Diagnostics;
+using Silkweb.Mobile.Core.Services;
 
 namespace Silkweb.Mobile.MountainWeather.Services
 {
     public class MountainWeatherService : IMountainWeatherService
     {
-        public IEnumerable<Location> GetAreas()
+        private const string BaseUrL = "http://datapoint.metoffice.gov.uk/public/data/";
+        private const string Key = "{Please obtain key from Met Office DataPoint}";
+        private IDialogService _dialogService;
+
+        public MountainWeatherService(IDialogService dialogService)
         {
-            return new Location[]
-            {
-                new Location { Id = 100, Name = "Area 1" },
-                new Location { Id = 101, Name = "Area 2" },
-                new Location { Id = 102, Name = "Area 3" },
-                new Location { Id = 103, Name = "Area 4" },
-                new Location { Id = 104, Name = "Area 5" },
-            };
+            _dialogService = dialogService;            
         }
 
-        public ForecastReport GetAreaForecast(int id)
+        #region IMountainWeatherService implementation
+
+        public async Task<ForecastCapability[]> GetCapabilities()
         {
-            switch (id)
+            string result = null;
+
+            try
             {
-                case 100 : return new ForecastReport { Forecast =  "Today will be fine and dry." };
-                case 101 : return new ForecastReport { Forecast =  "Today will be wet and windy." };
-                case 102 : return new ForecastReport { Forecast =  "Blizzards expected throughout the day." };
-                case 103 : return new ForecastReport { Forecast =  "Today will be very cold with occasional snow snowers." };
-                case 104 : return new ForecastReport { Forecast =  "High winds and white out conditions expected." };
-                default:
-                    return null;
+                Debug.WriteLine("Getting capabilities from DataPoint Service...");
+                result = await Get("txt/wxfcs/mountainarea/json/capabilities");   
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Failed to get capabilities from DataPoint Service. {0}", ex));
+                _dialogService.DisplayAlert("Locations", "Failed to get capabilities from service provider. The service maybe down. Please try later", "OK");
+            }
+
+            ForecastCapability[] forecastCapability = null;
+
+            try
+            {
+                var forecastsToken = JObject.Parse(result)["MountainForecastList"]["MountainForecast"];
+
+                forecastCapability = forecastsToken.Select(forecast => {
+
+                    var capability = new ForecastCapability
+                    {
+                        IssuedDate = DateTime.Parse((string)forecast["DataDate"]),
+                        ValidFrom = DateTime.Parse((string)forecast["ValidFrom"]),
+                        ValidTo = DateTime.Parse((string)forecast["ValidTo"]),
+                        CreatedDate = DateTime.Parse((string)forecast["CreatedDate"]),
+                        Uri = new Uri((string)forecast["URI"]),
+                        Area = (string)forecast["Area"]
+                    };
+
+                    Risk risk;
+                    Enum.TryParse<Risk>((string)forecast["Risk"], out risk);
+                    capability.Risk = risk;
+                    return capability;
+
+                }).ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Failed to parse MountainForecast from DataPoint Service. {0}", ex));
+                _dialogService.DisplayAlert("GetCapabilities", "Failed to get MountainForecast. The format may have changed.", "OK");
+            }
+
+            return forecastCapability;
         }
+
+        public async Task<IEnumerable<Location>>  GetAreas()
+        {
+            string result = null;
+
+            try
+            {
+                Debug.WriteLine("Getting Locations from DataPoint Service...");
+                result = await Get("txt/wxfcs/mountainarea/json/sitelist");   
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Failed to get Locations from DataPoint Service. {0}", ex));
+                _dialogService.DisplayAlert("Locations", "Failed to get locations from service provider. The service maybe down. Please try later", "OK");
+            }
+
+            Location[] locations = null;
+
+            try
+            {                
+                var locationToken = JObject.Parse(result)["Locations"]["Location"];
+
+                locations = locationToken.Select(location => new Location()
+                    { 
+                        Id = (int)location["@id"], 
+                        Name = (string)location["@name"] 
+                    }).ToArray();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Failed to parse Locations from DataPoint Service. {0}", ex));
+                _dialogService.DisplayAlert("Locations", "Failed to get locations. The format may have changed.", "OK");
+            }
+
+            return locations;
+        }
+
+        public async Task<ForecastReport> GetAreaForecast(int id)
+        {
+            string result = null;
+
+            try
+            {
+                Debug.WriteLine("Getting Area Forecast from DataPoint Service...");
+                result = await Get(string.Format("txt/wxfcs/mountainarea/json/{0}", id));   
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Failed to get Area Forecast from DataPoint Service. {0}", ex));
+                _dialogService.DisplayAlert("Locations", "Failed to get Area Forecast from service provider. The service maybe down. Please try later", "OK");
+            }
+
+            ForecastReport forecastReport = null;
+
+            try
+            {                
+                var report = JObject.Parse(result)["report"];
+
+                var forecastReport2 = new ForecastReport();
+                forecastReport2.IssuedBy = (string)report["creating-authority"];
+                forecastReport2.IssueDateTime = DateTime.Parse((string)report["creation-time"]);
+                forecastReport2.Title = (string)report["title"];
+                forecastReport2.Location = (string)report["title"];
+                forecastReport2.ValidFrom = DateTime.Parse((string)report["ValidFrom"]);
+                forecastReport2.ValidTo = DateTime.Parse((string)report["ValidTo"]);
+                forecastReport2.Validity = (string)report["Validity"];
+                forecastReport2.IssuedDate = (string)report["IssuedDate"];
+                forecastReport2.Hazards = report["Hazards"]["Hazard"].Select(hazard => new Hazard {
+                    No = (short)hazard["no"],
+                    Element = (string)hazard["Element"],
+                    Risk = (string)hazard["Risk"],
+                    Comments = (string)hazard["Comments"]
+                });
+                forecastReport2.Overview = (string)report["Overview"];
+                forecastReport2.ForecastDay0 = ParseForecast(report["Forecast_Day0"]);
+                forecastReport2.ForecastDay1 = ParseForecast(report["Forecast_Day1"]);
+                forecastReport2.OutlookDay2 = (string)report["Outlook_Day2"];
+                forecastReport2.OutlookDay3 = (string)report["Outlook_Day3"];
+                forecastReport2.OutlookDay4 = (string)report["Outlook_Day4"];
+                forecastReport = forecastReport2;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("Failed to parse Forecast Report from DataPoint Service. {0}", ex));
+                _dialogService.DisplayAlert("Locations", "Failed to get Forecast Report. The format may have changed.", "OK");
+            }
+
+            return forecastReport;
+        }
+
+        #endregion
+
+        private Forecast ParseForecast(JToken token)
+        {
+            var forecast = new Forecast
+            {
+                Weather = (string)token["Weather"],
+                Visibility = (string)token["Visibility"],
+                HillFog = (string)token["HillFog"],
+                MaxWindLevel = (string)token["MaxWindLevel"],
+                MaxWind = (string)token["MaxWind"],
+                TempLowLevel = (string)token["TempLowLevel"],
+                TempHighLevel = (string)token["TempHighLevel"],
+                FreezingLevel = (string)token["FreezingLevel"]                             
+            };
+
+            if (token["WeatherPPN"] != null)
+            {
+                var wxPeriod = token["WeatherPPN"]["WxPeriod"];
+
+                forecast.WeatherPPN = new WeatherPPN
+                { 
+                    WxPeriods = wxPeriod.Select(period =>
+                            new WxPeriod
+                        {
+                            No = (short)period["period"],
+                            Period = (string)period["Period"],
+                            Weather = (int)period["Weather"],
+                            Probability = (string)period["Probability"],
+                            PpnType = (string)period["Ppn_type"]
+                            }).ToArray()
+                }; 
+            }
+
+            return forecast;
+        }
+
+        private async Task<string> Get(string uri)
+        {
+            var client = new System.Net.Http.HttpClient ();
+
+            client.BaseAddress = new Uri(BaseUrL);
+
+            var response = await client.GetAsync(string.Format("{0}?key={1}", uri, Key));
+
+            response.EnsureSuccessStatusCode();
+
+            var result = response.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
     }
 }
-

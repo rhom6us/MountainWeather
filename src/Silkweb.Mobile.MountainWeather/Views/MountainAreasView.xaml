@@ -12,6 +12,9 @@
 				<cv:TextCellExtended Text="{Binding Name}"
 									 ShowDisclosure="True"
 									 Command="{Binding ShowForecastCommand}" />
+
+
+<!--									 Detail="{Binding IssuedDate, StringFormat='{0:ddd dd MMM yyyy} at {0:H:mm}'}"-->
 			</DataTemplate>
 		</ListView.ItemTemplate>
 	</ListView>

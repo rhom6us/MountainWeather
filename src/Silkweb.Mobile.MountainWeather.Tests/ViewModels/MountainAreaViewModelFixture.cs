@@ -16,8 +16,8 @@ namespace Silkweb.Mobile.MountainWeather.Tests.ViewModels
         {
             var location = new Location { Id = 100, Name = "Area 1" };
             var service = new Mock<IMountainWeatherService>();
-            var forecast = new ForecastReport { Forecast = "Test forecast" };
-            service.Setup(x => x.GetAreaForecast(100)).Returns(forecast);
+            var forecast = new ForecastReport { ForecastDay0  = new Forecast { Weather =  "Test forecast" } };
+            service.Setup(x => x.GetAreaForecast(100)).ReturnsAsync(forecast);
             var navigator = new Mock<INavigator>();
             var viewModel = new MountainAreaViewModel(location, service.Object, navigator.Object);
 

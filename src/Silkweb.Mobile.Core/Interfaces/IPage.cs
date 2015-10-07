@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
-namespace Silkweb.Mobile.Core.Services
+namespace Silkweb.Mobile.Core.Interfaces
 {
-    public interface IDialogService
+    public interface IPage
     {
-        void DisplayAlert(string title, string message, string cancel);
+        Task DisplayAlert(string title, string message, string cancel);
 
         Task<bool> DisplayAlert(string title, string message, string accept, string cancel);
 
         Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons);
+
+        INavigation Navigation { get; }
     }
 }
 

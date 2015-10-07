@@ -22,21 +22,21 @@ namespace Silkweb.Mobile.MountainWeather.Tests.ViewModels
             Func<Location, MountainAreaViewModel> locationFactory = location => 
                 new MountainAreaViewModel(location, service.Object, navigator.Object);
 
-            var areas = new List<Location>
+            var areas = new Location[]
                 {
                     new Location { Id = 100, Name = "Area 1" },
                     new Location { Id = 101, Name = "Area 2" },
                     new Location { Id = 102, Name = "Area 3" }
                 };
 
-            service.Setup(x => x.GetAreas()).Returns(areas);
+            service.Setup(x => x.GetAreas()).ReturnsAsync(areas);
 
             var viewModel = new MountainAreasViewModel(service.Object, locationFactory);
 
             service.Verify(x => x.GetAreas());
 
             Assert.That(viewModel.Areas, Is.Not.Null);
-            Assert.That(viewModel.Areas.Count(), Is.EqualTo(areas.Count));
+            Assert.That(viewModel.Areas.Count(), Is.EqualTo(areas.Length));
         }
     }
 }

@@ -4,25 +4,59 @@ using Silkweb.Mobile.Core.Services;
 using Xamarin.Forms;
 using Moq;
 using System.Threading.Tasks;
+using Silkweb.Mobile.Core.Interfaces;
 
 namespace Silkweb.Mobile.Core.Tests.Services
 {
-    [TestFixture, RequiresSTA]
+    [TestFixture]
     public class DialogServiceFixture
     {
-        [Test, Ignore] // Unable to return from await. Need to resolve.
-        public async void DisplaysAlert()
+        [Test]
+        public void DisplaysAlert()
         {
-            bool alertDisplayed = false;
-            var page = new Mock<Page>().Object;
-            var navigationPage = new Mock<IPageContainer<Page>>();
-            navigationPage.Setup(x => x.CurrentPage).Callback(() => alertDisplayed = true).Returns(page);
+            var page = new Mock<IPage>();
 
-            var dialogService = new DialogService(navigationPage.Object);
+            Func<IPage> pageResolver = () => page.Object;
 
-            await dialogService.DisplayAlert("title", "this is a test");
+            var dialogService = new DialogService(pageResolver);
 
-            Assert.That(alertDisplayed, Is.True);
+            dialogService.DisplayAlert ("Alert", "You have been alerted", "OK");
+
+            page.Verify(x => x.DisplayAlert("Alert", "You have been alerted", "OK"));
+        }
+
+        [Test]
+        public async void DisplaysAlertWithResponse()
+        {
+            var page = new Mock<IPage>();
+            page.Setup(x => x.DisplayAlert(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            Func<IPage> pageResolver = () => page.Object;
+
+            var dialogService = new DialogService(pageResolver);
+
+            var answer = await dialogService.DisplayAlert("Question?", "Would you like to play a game", "Yes", "No");
+
+            page.Verify(x => x.DisplayAlert("Question?", "Would you like to play a game", "Yes", "No"));
+            Assert.That(answer, Is.True);
+        }
+
+        [Test]
+        public async void DisplaysActionSheetWithResponse()
+        {
+            var page = new Mock<IPage>();
+            page.Setup(x => x.DisplayActionSheet("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook"))
+                .ReturnsAsync("Yes");
+
+            Func<IPage> pageResolver = () => page.Object;
+
+            var dialogService = new DialogService(pageResolver);
+
+            var answer = await dialogService.DisplayActionSheet("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook");
+
+            page.Verify(x => x.DisplayActionSheet("ActionSheet: Send to?", "Cancel", null, "Email", "Twitter", "Facebook"));
+            Assert.That(answer, Is.EqualTo("Yes"));
         }
 
     }
